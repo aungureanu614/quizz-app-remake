@@ -40,34 +40,42 @@ var questions = [{
     correct: 3
 }];
 
-console.log(questions[0]);
 
-var addItem = function(state, item) {
-    state.items.push(item);
+
+var addItem = function(state, question) {
+    state.items.push(question);
     
 };
 
 
 var renderQuestion = function(state, element1, element2) {
-    var questionHTML = state.items.map(function(item) {
+    var questionHTML = state.items.map(function(question) {
 
-        return '<p>' + item + '</p>';
+        return '<p>' + question.text + '</p>';
     });
-    var answersHTML = state.items.map(function(item) {
-
-        return '<li>' + item + '</li>';
+   
+    var answersHTML = state.items.map(function(question){
+        return '<li>' + question.answers + '</li>';
     });
+    
 
     element1.html(questionHTML);
     element2.html(answersHTML);
+   
 };
 
 
 
+$(function() {
 
+    
         addItem(state, questions[0]);
-        renderQuestion(state, $('.question'));
+        renderQuestion(state, $('.question'), $('.answers'));
+    
+        
+    
 
+});
 
 /*$('.shopping-list-add').submit(function(event) {
     event.preventDefault();
