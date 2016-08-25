@@ -6,34 +6,30 @@ var state = {
         'BAM128',
         'Barely'
     ],
+    correct: [0, 1, 2, 3]
 };
 
 var questions = [{
     text: '<:48:x<:65:=<:6C:$=$=$$~<:03:+$~<:ffffffffffffffbd:+$<:ffffffffffffffb1:+$<:57:~$~<:18:x+$~<:03:+$~<:06:x-$x<:0e:x-$=x<:43:x-$',
-
-    correct: 0
+    answer: '0815'
 }, {
     text: '+0+0+0+0+0+0+0+2)+0+0+9)+7))+3)-0-0-0-0-0-0-0-9)+0+0+0+0+0+0+0+0+7)-8)+3)-6)-8)-7-0-0-0-0-0-0)',
-
-    correct: 1
+    answer: '2B'
 }, {
     text: '*6*3p*4*3*2*0p*2*1*0pp>0*1*0p*5*4*0p*5*4*2*1*0p*4*3p*1*0p/+0p+0*6*5*2p+0*5*0p',
-
-    correct: 2
+    answer: 'BAM128'
 }, {
     text: ']xhhhhooooooooohhhhhhxooooooooxooooooxjjjxhoooohhhxhohhhhhhhxhhhhjjjhhhxhhhhooooooooohhhhhhxjjjxxjjjjjjjxjhhhhxjhhhhhhhhjjjhh~',
-
-    correct: 3
+    answer: 'Barely'
 }];
 
 
 
 var addItem = function(state, question) {
     state.items.push(question);
-    
+
 };
 
-//console.log(state.items[0]);
 
 
 var renderQuestion = function(state, element) {
@@ -50,22 +46,20 @@ var renderQuestion = function(state, element) {
 var renderAnswers = function(state, element) {
     var answersHTML = state.answers.map(function(answer) {
 
-        return '<li>' + answer + '</li>';
+        return '<li><button type="button">' + answer + '</button></li>';
     });
 
     element.html(answersHTML);
 };
 
-
+addItem(state, questions[0]);
+console.log(state.items[0].answer);
 
 $(function() {
 
-
-    addItem(state, questions[0]);
-    renderQuestion(state, $('.question'));
-    renderAnswers(state, $('.answers'));
-
-
+        
+        renderQuestion(state, $('.question'));
+        renderAnswers(state, $('.answers'));
 
 });
 
