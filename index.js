@@ -5,22 +5,26 @@ var state = {
         '2B',
         'BAM128',
         'Barely'
-    ],
-    correct: [0, 1, 2, 3]
+    ]
+
 };
 
 var questions = [{
     text: '<:48:x<:65:=<:6C:$=$=$$~<:03:+$~<:ffffffffffffffbd:+$<:ffffffffffffffb1:+$<:57:~$~<:18:x+$~<:03:+$~<:06:x-$x<:0e:x-$=x<:43:x-$',
-    answer: '0815'
+    answer: '0815',
+    display: true
 }, {
     text: '+0+0+0+0+0+0+0+2)+0+0+9)+7))+3)-0-0-0-0-0-0-0-9)+0+0+0+0+0+0+0+0+7)-8)+3)-6)-8)-7-0-0-0-0-0-0)',
-    answer: '2B'
+    answer: '2B',
+    display: false
 }, {
     text: '*6*3p*4*3*2*0p*2*1*0pp>0*1*0p*5*4*0p*5*4*2*1*0p*4*3p*1*0p/+0p+0*6*5*2p+0*5*0p',
-    answer: 'BAM128'
+    answer: 'BAM128',
+    display: false
 }, {
     text: ']xhhhhooooooooohhhhhhxooooooooxooooooxjjjxhoooohhhxhohhhhhhhxhhhhjjjhhhxhhhhooooooooohhhhhhxjjjxxjjjjjjjxjhhhhxjhhhhhhhhjjjhh~',
-    answer: 'Barely'
+    answer: 'Barely',
+    display: false
 }];
 
 
@@ -52,18 +56,33 @@ var renderAnswers = function(state, element) {
     element.html(answersHTML);
 };
 
-addItem(state, questions[0]);
-console.log(state.items[0].answer);
 
-$(function() {
 
+var getNextQuestion = function(state, question) {
+    var getQuestion = state.items.map(function(question){
+        console.log(question);
+    });
         
-        renderQuestion(state, $('.question'));
-        renderAnswers(state, $('.answers'));
+}
+
+$.each(questions, function(index, question) {
+
+    addItem(state, question);
+    renderQuestion(state, $('.question'));
+});
+
+renderAnswers(state, $('.answers'));
+
+
+
+
+
+
+/*$(function() {
 
 });
 
-/*$('.shopping-list-add').submit(function(event) {
+$('.shopping-list-add').submit(function(event) {
     event.preventDefault();
     addItem(state, $('.shopping-list-add-input').val());
     renderList(state, $('.shopping-list'));
