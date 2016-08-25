@@ -44,36 +44,39 @@ var questions = [{
 
 var addItem = function(state, question) {
     state.items.push(question);
-    
+
 };
 
 
-var renderQuestion = function(state, element1, element2) {
+var renderQuestion = function(state, element) {
     var questionHTML = state.items.map(function(question) {
 
         return '<p>' + question.text + '</p>';
     });
-   
-    var answersHTML = state.items.map(function(question){
+
+    element.html(questionHTML);
+
+};
+
+var renderAnswers = function(state, element) {
+    var answersHTML = state.items.map(function(question) {
+
         return '<li>' + question.answers + '</li>';
     });
-    
 
-    element1.html(questionHTML);
-    element2.html(answersHTML);
-   
+    element.html(answersHTML);
 };
 
 
 
 $(function() {
 
-    
-        addItem(state, questions[0]);
-        renderQuestion(state, $('.question'), $('.answers'));
-    
-        
-    
+
+    addItem(state, questions[0]);
+    renderQuestion(state, $('.question'));
+    renderAnswers(state, $('.answers'));
+
+
 
 });
 
