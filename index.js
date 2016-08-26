@@ -6,7 +6,7 @@ var state = {
         'BAM128',
         'Barely'
     ],
-    counter: 0,
+    question_counter: 0,
     correct: 0
 
 };
@@ -39,32 +39,47 @@ var questionHTML = null;
 var count = 0;
 
 var getNextQuestion = function(state, element) {
-    
 
-    while (count < state.items.length) {
+
+    while (count < state.items.length -1) {
         if (state.items[count].display) {
             state.items[count].display = false;
             state.items[count + 1].display = true;
             questionHTML = '<p>' + state.items[count + 1].text + '</p>';
-            state.counter+=1;
+            getQuestionCounter(state);
             count++;
-            
+
         }
         break;
     }
     if (questionHTML === null) {
         state.items[0].display = true;
         questionHTML = '<p>' + state.items[0].text + '</p>';
-        state.counter = 1;
+        state.question_counter = 1;
     }
 
-    
+
     element.html(questionHTML);
- 
-    console.log(state.items, state.counter);
+
+    console.log(state.items);
 
 };
 
+var getQuestionCounter = function(state) {
+    if (state.question_counter < state.items.length) {
+        state.question_counter += 1;
+    } 
+    if(state.question_counter === 5){
+        displayNumCorrect();
+    }
+
+    //console.log(state.question_counter);
+}
+
+function displayNumCorrect(){
+    $('.questions-page').empty();
+
+}
 
 var renderAnswers = function(state, element) {
     var answersHTML = state.answers.map(function(answer) {
@@ -77,13 +92,13 @@ var renderAnswers = function(state, element) {
 };
 
 var checkAnswer = function(state, chosenAnswer) {
-    for (var i = 0; i < state.items.length; i++) {
-        if (state.items[i].display) {
-            if (state.items[i].answer === chosenAnswer) {
-                state.correct += 1;
-            }
+
+    if (state.items[count].display) {
+        if (state.items[count].answer === chosenAnswer) {
+            state.correct += 1;
         }
     }
+    //console.log(state.correct);
 };
 
 $.each(questions, function(index, question) {
@@ -99,11 +114,13 @@ renderAnswers(state, $('.answers'));
 $(function() {
 
     getNextQuestion(state, $('.question'));
+    $('.question-current').empty().append(state.question_counter);
 
     $('button').on('click', function(e) {
         e.preventDefault();
-        $('.question-current').empty().append(state.counter);
+        
         checkAnswer(state, $(this).text());
         getNextQuestion(state, $('.question'));
+        $('.question-current').empty().append(state.question_counter);
     });
 });
