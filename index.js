@@ -6,7 +6,8 @@ var state = {
         'BAM128',
         'Barely'
     ],
-    counter: 0
+    counter: 0,
+    correct: 0
 
 };
 
@@ -34,24 +35,33 @@ var addItem = function(state, question) {
     state.items.push(question);
 
 };
+var questionHTML = null;
+var count = 0;
 
 var getNextQuestion = function(state, element) {
-    var questionHTML = null;
+    
 
-    for (var i = 0; i < state.items.length; i++) {
-        if (state.items[i].display) {
-            state.items[i].display = false;
-            state.items[i + 1].display = true;
-            questionHTML = '<p>' + state.items[i + 1].text + '</p>';
+    while (count < state.items.length) {
+        if (state.items[count].display) {
+            state.items[count].display = false;
+            state.items[count + 1].display = true;
+            questionHTML = '<p>' + state.items[count + 1].text + '</p>';
+            state.counter+=1;
+            count++;
+            
         }
         break;
     }
     if (questionHTML === null) {
         state.items[0].display = true;
         questionHTML = '<p>' + state.items[0].text + '</p>';
+        state.counter = 1;
     }
 
+    
     element.html(questionHTML);
+ 
+    console.log(state.items, state.counter);
 
 };
 
@@ -63,13 +73,14 @@ var renderAnswers = function(state, element) {
     });
 
     element.html(answersHTML);
+
 };
 
 var checkAnswer = function(state, chosenAnswer) {
     for (var i = 0; i < state.items.length; i++) {
         if (state.items[i].display) {
             if (state.items[i].answer === chosenAnswer) {
-                state.counter += 1;
+                state.correct += 1;
             }
         }
     }
@@ -81,7 +92,7 @@ $.each(questions, function(index, question) {
 
 
 });
-console.log(state.items);
+//console.log(state.items);
 
 renderAnswers(state, $('.answers'));
 
@@ -91,7 +102,7 @@ $(function() {
 
     $('button').on('click', function(e) {
         e.preventDefault();
-
+        $('.question-current').empty().append(state.counter);
         checkAnswer(state, $(this).text());
         getNextQuestion(state, $('.question'));
     });
