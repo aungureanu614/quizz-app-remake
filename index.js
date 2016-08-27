@@ -7,8 +7,9 @@ var state = {
         'Barely'
     ],
     question_counter: 0,
-    correct: 0
-
+    correct: 0,
+    questionHTML: null,
+    count: 0
 };
 
 var questions = [{
@@ -35,51 +36,41 @@ var addItem = function(state, question) {
     state.items.push(question);
 
 };
-var questionHTML = null;
-var count = 0;
+
+
 
 var getNextQuestion = function(state, element) {
 
 
-    while (count < state.items.length -1) {
-        if (state.items[count].display) {
-            state.items[count].display = false;
-            state.items[count + 1].display = true;
-            questionHTML = '<p>' + state.items[count + 1].text + '</p>';
-            getQuestionCounter(state);
-            count++;
+    while (state.count < state.items.length) {
+        if (state.items[state.count].display) {
+            state.items[state.count].display = false;
+            if (state.items[state.count + 1] === undefined) {
+                $('.questions-page').hide();
+                $('.results-page').css('display', 'block');
+                $('.score').empty().append(state.correct);
+            } else {
+                state.items[state.count + 1].display = true;
+                state.questionHTML = '<p>' + state.items[state.count + 1].text + '</p>';
+                state.count++;
 
+            }
         }
         break;
     }
-    if (questionHTML === null) {
+    if (state.questionHTML === null) {
         state.items[0].display = true;
-        questionHTML = '<p>' + state.items[0].text + '</p>';
-        state.question_counter = 1;
+        state.questionHTML = '<p>' + state.items[0].text + '</p>';
+
     }
 
 
-    element.html(questionHTML);
-
-    console.log(state.items);
+    element.html(state.questionHTML);
+    state.question_counter += 1;
+    console.log(state.question_counter);
 
 };
 
-var getQuestionCounter = function(state) {
-    if (state.question_counter < state.items.length) {
-        state.question_counter += 1;
-    } 
-    if(state.question_counter === 5){
-        displayNumCorrect();
-    }
-
-    //console.log(state.question_counter);
-}
-
-function displayNumCorrect(){
-    $('.questions-page').empty();
-
-}
 
 var renderAnswers = function(state, element) {
     var answersHTML = state.answers.map(function(answer) {
@@ -93,34 +84,63 @@ var renderAnswers = function(state, element) {
 
 var checkAnswer = function(state, chosenAnswer) {
 
-    if (state.items[count].display) {
-        if (state.items[count].answer === chosenAnswer) {
+    if (state.items[state.count].display) {
+        if (state.items[state.count].answer === chosenAnswer) {
             state.correct += 1;
         }
     }
     //console.log(state.correct);
 };
 
-$.each(questions, function(index, question) {
+function populateItems() {
+    $.each(questions, function(index, question) {
 
-    addItem(state, question);
+        addItem(state, question);
 
 
-});
+    });
+}
+var resetState = function(state, element, element2) {
+
+    state.items = [];
+    state.answers = [
+        '0815',
+        '2B',
+        'BAM128',
+        'Barely'
+    ];
+    state.question_counter = 0;
+    state.correct = 0;
+    state.questionHTML = null;
+
+    element.css('display', 'none');
+    element2.show();
+
+    populateItems();
+    console.log(state);
+    
+    getNextQuestion(state, $('.question'));
+
+};
 //console.log(state.items);
 
 renderAnswers(state, $('.answers'));
 
 $(function() {
-
+    populateItems();
     getNextQuestion(state, $('.question'));
     $('.question-current').empty().append(state.question_counter);
 
     $('button').on('click', function(e) {
         e.preventDefault();
-        
+
         checkAnswer(state, $(this).text());
         getNextQuestion(state, $('.question'));
         $('.question-current').empty().append(state.question_counter);
+
+    });
+    $('.restart-button').on('click', function(e) {
+        e.preventDefault();
+        resetState(state, $('.results-page'), $('.questions-page'));
     });
 });
