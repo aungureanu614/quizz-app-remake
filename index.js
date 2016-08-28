@@ -37,14 +37,13 @@ var addItem = function(state, question) {
 
 };
 
-
-
 var getNextQuestion = function(state, element) {
 
 
     while (state.count < state.items.length) {
         if (state.items[state.count].display) {
             state.items[state.count].display = false;
+            state.question_counter += 1;
             if (state.items[state.count + 1] === undefined) {
                 $('.questions-page').hide();
                 $('.results-page').css('display', 'block');
@@ -53,21 +52,18 @@ var getNextQuestion = function(state, element) {
                 state.items[state.count + 1].display = true;
                 state.questionHTML = '<p>' + state.items[state.count + 1].text + '</p>';
                 state.count++;
-
             }
         }
+
         break;
     }
     if (state.questionHTML === null) {
         state.items[0].display = true;
         state.questionHTML = '<p>' + state.items[0].text + '</p>';
-
+        state.question_counter += 1;
     }
 
-
     element.html(state.questionHTML);
-    state.question_counter += 1;
-    console.log(state.question_counter);
 
 };
 
@@ -75,11 +71,10 @@ var getNextQuestion = function(state, element) {
 var renderAnswers = function(state, element) {
     var answersHTML = state.answers.map(function(answer) {
 
-        return '<li><button type="button">' + answer + '</button></li>';
+        return '<li><button class="answers-btn" type="button">' + answer + '</button></li>';
     });
 
     element.html(answersHTML);
-
 };
 
 var checkAnswer = function(state, chosenAnswer) {
@@ -89,15 +84,12 @@ var checkAnswer = function(state, chosenAnswer) {
             state.correct += 1;
         }
     }
-    //console.log(state.correct);
 };
 
 function populateItems() {
     $.each(questions, function(index, question) {
 
         addItem(state, question);
-
-
     });
 }
 var resetState = function(state, element, element2) {
@@ -111,15 +103,18 @@ var resetState = function(state, element, element2) {
     ];
     state.question_counter = 0;
     state.correct = 0;
+    state.count = 0;
     state.questionHTML = null;
 
     element.css('display', 'none');
     element2.show();
 
     populateItems();
-    console.log(state);
-    
+
+
     getNextQuestion(state, $('.question'));
+    $('.question-current').empty().append(state.question_counter);
+
 
 };
 //console.log(state.items);
@@ -131,7 +126,7 @@ $(function() {
     getNextQuestion(state, $('.question'));
     $('.question-current').empty().append(state.question_counter);
 
-    $('button').on('click', function(e) {
+    $('.answers-btn').on('click', function(e) {
         e.preventDefault();
 
         checkAnswer(state, $(this).text());
